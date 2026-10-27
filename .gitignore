@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Data (downloaded/generated — never commit raw data)
+data/raw/
+data/interim/
+data/processed/
+models/*.pt
+models/*.onnx
+
+# Experiment tracking
+mlruns/
+mlartifacts/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Misc
+*.log
+.env

@@ -1,0 +1,43 @@
+data:
+  raw_dir: data/raw/low_freq
+  interim_dir: data/interim
+  processed_dir: data/processed
+  source: redd_lowfreq          # only implemented source so far
+  sample_seconds: 3             # REDD low_freq is ~1s mains / ~3s appliances
+  mains_channels: [1, 2]        # REDD: channels 1+2 = the two mains legs
+  # split strategy: "by_time" (single house, chronological split) or "by_house"
+  split:
+    strategy: by_time
+    train_frac: 0.7
+    val_frac: 0.15
+    # by_house alternative:
+    # strategy: by_house
+    # train: [house_1, house_3]
+    # val: [house_6]
+    # test: [house_2]
+  appliances:                   # candidates, in priority order; first one present wins
+    - refrigerator
+    - washer_dryer
+    - dishwasher
+    - microwave
+
+model:
+  type: seq2point
+  window_size: 599              # ~30 min at 3s sampling; must be odd
+  dropout: 0.2
+  normalize: max                # 'max' (divide by abs max) or 'zscore'
+
+train:
+  batch_size: 256
+  lr: 0.001
+  epochs: 30
+  weight_decay: 0.0001
+  early_stop_patience: 5
+  seed: 42
+  device: auto                  # auto -> cuda/mps if available else cpu
+  checkpoint_dir: models
+  mlflow_tracking: true         # set false to skip mlflow entirely
+
+evaluate:
+  on_threshold_watts: 50        # appliance counts as "on" above this
+  checkpoint: models/seq2point_best.pt
